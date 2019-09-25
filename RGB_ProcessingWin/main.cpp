@@ -1,6 +1,8 @@
-#include <iostream>#include <vector>
+#include <iostream>
+#include <vector>
 //Thread building blocks library
-#include <tbb/task_scheduler_init.h>//Free Image library
+#include <tbb/task_scheduler_init.h>
+//Free Image library
 #include <FreeImagePlus.h>
 #include <cmath>
 #include <functional>
@@ -13,9 +15,14 @@
 #include <chrono>
 
 using namespace std;
-using namespace tbb;int main() {
+using namespace tbb;
+
+int main() {
 	int nt = task_scheduler_init::default_num_threads();
-	task_scheduler_init T(nt);	// Setup Input image arrays	fipImage inputImage1;
+	task_scheduler_init T(nt);
+
+	// Setup Input image arrays
+	fipImage inputImage1;
 	fipImage inputImage2;
 	inputImage1.load("../Images/35k1.png");
 	inputImage2.load("../Images/35k2.png");
@@ -55,7 +62,9 @@ using namespace tbb;int main() {
 	{
 		for (int x = 0; x < width; x++)
 		{
-			inputImage1.getPixelColor(x, y, &rgb); //Extract pixel(x,y) colour data and place it in rgb			rgbValues1[y][x].rgbRed = rgb.rgbRed;
+			inputImage1.getPixelColor(x, y, &rgb); //Extract pixel(x,y) colour data and place it in rgb
+
+			rgbValues1[y][x].rgbRed = rgb.rgbRed;
 			rgbValues1[y][x].rgbGreen = rgb.rgbGreen;
 			rgbValues1[y][x].rgbBlue = rgb.rgbBlue;
 		}
@@ -96,7 +105,56 @@ using namespace tbb;int main() {
 				outputRGB[y][x].rgbRed = 255;
 				outputRGB[y][x].rgbGreen = 255;
 				outputRGB[y][x].rgbBlue = 255;
-			}		}	}	std::cout << "before save" << endl;	for (int y = 0; y < height; y++)	{		for (int x = 0; x < width; x++)		{			outputImage.setPixelColor(x, y, &outputRGB[y][x]);		}	}	std::cout << "before export" << endl;	outputImage.save("RGB_processed.png");	//Count all the white pixels on the saved image	std::cout << "before white count" << endl;	for (int y = 0; y < height; y++)	{		for (int x = 0; x < width; x++)		{			if (outputRGB[y][x].rgbRed == 255 && outputRGB[y][x].rgbGreen == 255 && outputRGB[y][x].rgbBlue == 255)			{				whiteCount += 1;			}		}	}	std::cout << "before total count" << endl;	pixelCount = width * height;	whitePercent = (whiteCount / pixelCount) * 100;	// Calculate the % of white pixels.	std::cout << fixed;	std::cout << "There are a total of : " << whiteCount << " whitepixels out of a possible " << pixelCount << " in the finalimage." << endl;	std::cout << "This means that " << whitePercent << "% of the pixelson the screen are white." << endl;	outputRGB[redPixelHeight][redPixelWidth].rgbRed = 255;	outputRGB[redPixelHeight][redPixelWidth].rgbGreen = 0;	outputRGB[redPixelHeight][redPixelWidth].rgbBlue = 0;	std::cout << "Red Pixel placed. Searching..." << endl;	//Search for the random red pixel on the screen.	for (int y = 0; y < height; y++)	{		for (int x = 0; x < width; x++)
+			}
+		}
+	}
+
+	std::cout << "before save" << endl;
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			outputImage.setPixelColor(x, y, &outputRGB[y][x]);
+		}
+	}
+
+	std::cout << "before export" << endl;
+	outputImage.save("RGB_processed.png");
+
+	//Count all the white pixels on the saved image
+	std::cout << "before white count" << endl;
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			if (outputRGB[y][x].rgbRed == 255 && outputRGB[y][x].rgbGreen == 255 && outputRGB[y][x].rgbBlue == 255)
+			{
+				whiteCount += 1;
+			}
+		}
+	}
+
+	std::cout << "before total count" << endl;
+	pixelCount = width * height;
+	whitePercent = (whiteCount / pixelCount) * 100;
+
+	// Calculate the % of white pixels.
+
+	std::cout << fixed;
+	std::cout << "There are a total of : " << whiteCount << " whitepixels out of a possible " << pixelCount << " in the finalimage." << endl;
+	std::cout << "This means that " << whitePercent << "% of the pixelson the screen are white." << endl;
+
+	outputRGB[redPixelHeight][redPixelWidth].rgbRed = 255;
+	outputRGB[redPixelHeight][redPixelWidth].rgbGreen = 0;
+	outputRGB[redPixelHeight][redPixelWidth].rgbBlue = 0;
+
+	std::cout << "Red Pixel placed. Searching..." << endl;
+
+	//Search for the random red pixel on the screen.
+
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
 		{
 			if (outputRGB[y][x].rgbRed == 255 && outputRGB[y][x].rgbGreen == 0 && outputRGB[y][x].rgbBlue == 0)
 			{
